@@ -44,7 +44,9 @@ exports.notFound = function (req, res, next) {
  * @param res
  * @param next
  */
-exports.handleUnknownError = function (err, req, res, next) {
+exports.handleUnknownError = function (err, req, res) {
+    res.type('json');
+    logger.info('unknown error');
     if (process.env.NODE_ENV == 'development') {
         res.status(err.status || 500).send({
             status: {

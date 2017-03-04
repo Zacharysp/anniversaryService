@@ -9,11 +9,12 @@ var CreateUpdatedAt = require('mongoose-timestamp');
 var UserSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: true,
-        unique: [true, "username must be unique"]
+        required: [true, 'Missing username'],
+        unique: true
     },
     hashed_password: {
-        type: String
+        type: String,
+        required: [true, 'Missing password']
     },
     salt: {
         type: String
@@ -27,7 +28,6 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.plugin(CreateUpdatedAt);
 
-
 /**
  * Virtuals
  */
@@ -39,21 +39,18 @@ UserSchema.virtual('password')
     })
     .get(function () { return this._password });
 
-
-// UserSchema.path('username').validate(function (username) {
-//     return username.length
-// }, 'Username cannot be blank');
-//
-// UserSchema.path('username').validate(function (username) {
-//
-//     logger.info('in validate');
-//     // Check only when it is a new user or when email field is modified
-//     if (this.isNew || this.isModified('username')) {
-//         User.find({ username: username }).exec(function (err, users) {
-//             return !err && users.length === 0
-//         })
-//     } else return true
-// }, 'Username already exists');
+UserSchema.path('username').validate(function(username, callback){
+    if (this.isNew || this.isModified('username')) {
+        var User = mongoose.model('User');
+        User.find({ username: username }).exec(function (err, users){
+            logger.info(err);
+            logger.info(users.length);
+            callback(!err && users.length == 0)
+        })
+    }else {
+        callback(true)
+    }
+}, 'username already existed');
 
 UserSchema.methods = {
 
@@ -98,12 +95,6 @@ UserSchema.methods = {
     }
 };
 
-var UserModel = mongoose.model('UserModel', UserSchema);
-
-UserModel.schema.path('username').validate(function (username) {
-    return username.length
-}, 'Username cannot be blank', 'Missing username');
-
-
+var UserModel = mongoose.model('User', UserSchema);
 
 module.exports = UserModel;

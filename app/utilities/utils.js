@@ -29,7 +29,7 @@ exports.handleFailResponse = function (res){
         switch (err.name) {
             //handle validation error response
             case 'ValidationError':
-                res.status(400).send(handleResponse(301, displayJoiError(err)));
+                res.status(400).send(handleResponse(301, displayValidationError(err)));
                 break;
             //handle database error response
             case 'UnauthorizedError':
@@ -45,7 +45,13 @@ exports.handleFailResponse = function (res){
                 break;
             //handle bad request error response
             default:
-                res.status(400).send(handleResponse(err.code, err.message));
+                if (process.env.NODE_ENV == 'development') {
+                    res.status(404).send(handleResponse(err.code, err.message));
+                } else {
+                    res.status(404).send(handleResponse(err.code, err.publicMessage));
+                }
+                break;
+
         }
     }
 };
@@ -79,18 +85,28 @@ function handleResponse(code, msg, data) {
 }
 
 /**
- * construct joi error message to one line
+ * construct validation error message to one line
  * @param err
  * @returns {string}
  */
-function displayJoiError (err){
-    logger.info(err.errors);
-    var msg = "";
-    err.details.forEach(function(data){
-        msg += data.message;
-        msg += ', '
-    });
-    return msg;
+function displayValidationError (err){
+    var msgs = [];
+    if (err.errors) {
+        //mongoose errors
+        logger.info('mongoose');
+        for (var key in err.errors) {
+            if (err.errors.hasOwnProperty(key)){
+                msgs.push(err.errors[key].message);
+            }
+        }
+    }else {
+        //joi error
+        logger.info('joi');
+        err.details.forEach(function(data){
+            msgs.push(data.message);
+        });
+    }
+    return msgs.join(', ');
 }
 
 exports.validatePromise = function (validateObj, schemaObj, options) {

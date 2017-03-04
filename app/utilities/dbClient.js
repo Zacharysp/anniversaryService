@@ -10,9 +10,7 @@ var connectionString = 'mongodb://' + dbConfig.host + ':' + dbConfig.port + '/' 
 
 var options = {
   db: { native_parser: true },
-  server: { poolSize: 5 },
-  user: 'zachary',
-  pass: 'anniversarypsword'
+  server: { poolSize: 5 }
 };
 
 logger.info('Connect mongodb to: ' + connectionString);

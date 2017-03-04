@@ -22,11 +22,12 @@ var morgan = require('morgan');
 var chalk = require('chalk');
 
 morgan.token('colormethodurlstatus', function (req, res) {
-    function headersSent (res) {
+    function headersSent(res) {
         return typeof res.headersSent !== 'boolean'
             ? Boolean(res._header)
             : res.headersSent
     }
+
     var method = chalk.blue(req.method);
     var url = req.originalUrl || req.url;
     var status = headersSent(res) ? String(res.statusCode) : undefined;
@@ -49,7 +50,7 @@ function init(app) {
 }
 
 exports.start = function (app, router) {
-        startApp(app, router);
+    startApp(app, router);
 };
 
 function startApp(app, router) {

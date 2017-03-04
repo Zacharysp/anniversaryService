@@ -26,7 +26,9 @@ module.exports.warn = function () {
 };
 
 module.exports.error = function () {
-    logger.error.apply(logger, formatLogArguments(arguments))
+    if(process.env.NODE_ENV == 'development') {
+        logger.error.apply(logger, formatLogArguments(arguments))
+    }
 };
 
 module.exports.dev = function () {
