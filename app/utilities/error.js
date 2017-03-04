@@ -19,6 +19,10 @@ var definedErrors = [
         className: 'BadRequest',
         message: 'bad request',
         code: '301'
+    },{
+        className: 'LoginFail',
+        message: 'Wrong combination of username and password',
+        code: '102'
     }
 ];
 

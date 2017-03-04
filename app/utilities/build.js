@@ -47,6 +47,10 @@ function init(app) {
     app.disable('etag');
 
     app.use(filters.cors);
+    app.use(function (req, res, next) {
+        req.model = require('../models');
+        next();
+    })
 }
 
 exports.start = function (app, router) {

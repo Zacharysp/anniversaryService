@@ -45,13 +45,8 @@ exports.handleFailResponse = function (res){
                 break;
             //handle bad request error response
             default:
-                if (process.env.NODE_ENV == 'development') {
-                    res.status(404).send(handleResponse(err.code, err.message));
-                } else {
-                    res.status(404).send(handleResponse(err.code, err.publicMessage));
-                }
+                res.status(400).send(handleResponse(err.code, err.message));
                 break;
-
         }
     }
 };

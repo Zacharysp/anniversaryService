@@ -39,12 +39,13 @@ UserSchema.virtual('password')
     })
     .get(function () { return this._password });
 
+/**
+ * verify username is unique
+ */
 UserSchema.path('username').validate(function(username, callback){
     if (this.isNew || this.isModified('username')) {
         var User = mongoose.model('User');
         User.find({ username: username }).exec(function (err, users){
-            logger.info(err);
-            logger.info(users.length);
             callback(!err && users.length == 0)
         })
     }else {
