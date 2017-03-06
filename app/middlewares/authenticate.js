@@ -7,7 +7,6 @@ var util = require('../utilities').util;
 
 var UnauthorizedError = errors.UnauthorizedError;
 
-
 module.exports = function(req, res, next) {
     return passport.authenticate('bearer', {session: false}, function (err, authInfo) {
         if (err) {
