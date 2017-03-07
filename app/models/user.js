@@ -28,6 +28,9 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.plugin(CreateUpdatedAt);
 
+
+UserSchema.index({ username: 1 });
+
 /**
  * Virtuals
  */

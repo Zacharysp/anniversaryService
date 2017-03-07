@@ -4,6 +4,7 @@
 "use strict";
 var mongoose = require('mongoose');
 var CreateUpdatedAt = require('mongoose-timestamp');
+var ObjectId = mongoose.Schema.ObjectId;
 
 var EventWorkerSchema = new mongoose.Schema({
     event_id: {
@@ -15,6 +16,8 @@ var EventWorkerSchema = new mongoose.Schema({
 });
 
 EventWorkerSchema.plugin(CreateUpdatedAt);
+
+EventWorkerSchema.index({ event_id: 1 });
 
 
 var EventWorkerModel = mongoose.model('EventWorker', EventWorkerSchema);

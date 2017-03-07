@@ -1,11 +1,11 @@
 /**
- * Created by Zachary on 3/6/17.
+ * Created by dzhang on 3/7/17.
  */
 
 var util = require('../../utilities').util;
 var Joi = require('joi');
 
-var create = function (req, res) {
+var addWorker = function (req, res) {
     // JOI validation
     var joiSchema = Joi.object().keys({
         title: Joi.string().max(50).required()
@@ -29,4 +29,4 @@ var create = function (req, res) {
     });
 };
 
-module.exports = create;
+module.exports = addWorker;
