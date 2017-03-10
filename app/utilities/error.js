@@ -9,20 +9,24 @@ var definedErrors = [
     {
         className: 'UnauthorizedError',
         message: 'unauthorized',
-        code: '101'
+        code: '0101'
     },{
         className: 'ServerError',
         message: 'server error',
         publicMessage: 'server error',
-        code: '201'
+        code: '0201'
     },{
         className: 'BadRequest',
         message: 'bad request',
-        code: '301'
+        code: '0301'
     },{
         className: 'LoginFail',
         message: 'Wrong combination of username and password',
-        code: '102'
+        code: '0102'
+    },{
+        className: 'AlreadyWatch',
+        message: 'You are already watching this event',
+        code: '0501'
     }
 ];
 

@@ -3,3 +3,4 @@
  */
 
 exports.create = require('./create');
+exports.watch = require('./watch');

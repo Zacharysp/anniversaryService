@@ -10,6 +10,7 @@ var UserSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, 'Missing username'],
+        index: true,
         unique: true
     },
     hashed_password: {

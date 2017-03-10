@@ -3,4 +3,4 @@
  */
 exports.UserModel = require('./user');
 exports.EventModel = require('./event');
-exports.EventWorkerModel = require('./eventWorker');
+exports.EventWatcherModel = require('./eventWatcher');

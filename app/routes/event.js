@@ -8,4 +8,6 @@ var authenticate = require('../middlewares').auth;
 
 router.post('/new', authenticate, eventCtrl.create);
 
+router.post('/watch', authenticate, eventCtrl.watch);
+
 module.exports = router;

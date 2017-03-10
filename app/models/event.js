@@ -7,7 +7,8 @@ var CreateUpdatedAt = require('mongoose-timestamp');
 
 var EventSchema = new mongoose.Schema({
     owner: {
-        type: String
+        type: String,
+        required: true
     },
     moments: {
         type: Array
@@ -22,7 +23,11 @@ var EventSchema = new mongoose.Schema({
     status: {
         type: Number,
         required: true
-    }
+    },
+    workers: [{
+        type: String,
+        ref: 'User'
+    }]
 });
 
 EventSchema.plugin(CreateUpdatedAt);

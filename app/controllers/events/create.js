@@ -17,9 +17,9 @@ var create = function (req, res) {
         return event.save()
     }).then(function(result){
         logger.info(result._doc);
-        var eventWorker = new req.model.EventWorkerModel({
+        var eventWorker = new req.model.EventWatcherModel({
             event_id: result._doc._id,
-            worker: req.authInfo
+            watcher: req.authInfo
         });
         return eventWorker.save();
     }).then(function(){
