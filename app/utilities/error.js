@@ -27,6 +27,14 @@ var definedErrors = [
         className: 'AlreadyWatch',
         message: 'You are already watching this event',
         code: '0501'
+    },{
+        className: 'AlreadyWork',
+        message: 'Already work on this event',
+        code: '0502'
+    },{
+        className: 'PermissionDenied',
+        message: 'You don\'t have permisson',
+        code: '0102'
     }
 ];
 

@@ -13,11 +13,9 @@ var watch = function (req, res) {
     var joiSchema = Joi.object().keys({
         event_id: Joi.string().length(24).required()
     });
-    util.validatePromise(req.body, joiSchema).then(function(result) {
-        result.owner = req.authInfo;
-        result.status = 0;
+    util.validatePromise(req.body, joiSchema).then(function (result) {
         return req.model.EventWatcherModel.findOne({'event_id': result.event_id, 'watcher': req.authInfo})
-    }).then(function(result){
+    }).then(function (result) {
         logger.info(result);
         if (result) throw new AlreadyWatch();
         var eventWatcher = new req.model.EventWatcherModel({
@@ -25,9 +23,9 @@ var watch = function (req, res) {
             watcher: req.authInfo
         });
         return eventWatcher.save();
-    }).then(function(){
+    }).then(function () {
         util.handleSuccessResponse(res)();
-    }).catch(function(err){
+    }).catch(function (err) {
         return util.handleFailResponse(res)(err);
     });
 };

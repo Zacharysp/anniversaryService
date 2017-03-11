@@ -6,8 +6,14 @@ var router = require('express').Router();
 var eventCtrl = require('../controllers/events');
 var authenticate = require('../middlewares').auth;
 
-router.post('/new', authenticate, eventCtrl.create);
+router.use(authenticate);
 
-router.post('/watch', authenticate, eventCtrl.watch);
+router.post('/new', eventCtrl.create);
+
+router.post('/watch', eventCtrl.watch);
+
+router.post('/add', eventCtrl.addWorker);
+
+router.get('/watchers', eventCtrl.findAllWatchers);
 
 module.exports = router;
