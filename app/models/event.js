@@ -10,9 +10,12 @@ var EventSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    moments: {
-        type: Array
-    },
+    moments: [
+        {
+            type: String,
+            ref: 'Moment'
+        }
+    ],
     title: {
         type: String,
         required: true

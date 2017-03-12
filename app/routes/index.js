@@ -6,5 +6,6 @@ var router = require('express').Router();
 
 router.use('/user', require('./user'));
 router.use('/event', require('./event'));
+router.use('/moment', require('./moment'));
 
 module.exports = router;

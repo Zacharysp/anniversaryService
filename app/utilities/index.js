@@ -7,5 +7,6 @@ exports.build = require('./build');
 exports.util = require('./utils');
 exports.errors = require('./error');
 exports.dbClient = require('./dbClient');
+exports.helper = require('./helper');
 
 require('./passport');
