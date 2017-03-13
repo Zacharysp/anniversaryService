@@ -4,7 +4,6 @@
 "use strict";
 var mongoose = require('mongoose');
 var CreateUpdatedAt = require('mongoose-timestamp');
-var ObjectId = mongoose.Schema.ObjectId;
 
 var MomentSchema = new mongoose.Schema({
     owner: {
@@ -16,7 +15,7 @@ var MomentSchema = new mongoose.Schema({
     },
     photos: [
         {
-            type: ObjectId
+            type: String
         }
     ],
     comments: [
@@ -38,7 +37,13 @@ var MomentSchema = new mongoose.Schema({
     temp: {
         type: Number
     },
-    location: {
+    latitude: {
+        type: Number
+    },
+    longitude: {
+        type: Number
+    },
+    ip:{
         type: String
     },
     weather: {
@@ -54,43 +59,6 @@ var MomentSchema = new mongoose.Schema({
 });
 
 MomentSchema.plugin(CreateUpdatedAt);
-
-// MomentSchema.methods.fileWriteStream = function(filename, uploader){
-//     var options = {
-//         filename: filename,
-//         mode: 'w',
-//         metadata: {
-//             'uploader': uploader
-//         }
-//     };
-//     // streaming to gridfs
-//     //filename to store in mongodb
-//     var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-//     var writeStream = gfs.createWriteStream(options);
-//
-//     writeStream.on('close', function (file) {
-//         // do something with `file`
-//         console.log(file.filename + 'Written To DB');
-//     });
-//
-//     writeStream.on('error', function (err) {
-//         throw err;
-//     });
-//
-//     return writeStream;
-// };
-
-// trackDocsSchema.methods.addFile = function(file, options, fn) {
-//     var trackDocs;
-//     trackDocs = this;
-//     return gridfs.putFile(file.path, file.name, options, function(err, result) {
-//         if (err) console.log("postDocsModel TrackDocs Error: " + err);
-//
-//         trackDocs.files.push(result);
-//         return trackDocs.save(fn);
-//     });
-// };
-
 
 var MomentModel = mongoose.model('Moment', MomentSchema);
 
