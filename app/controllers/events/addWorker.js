@@ -8,6 +8,7 @@ var Joi = require('joi');
 
 var AlreadyWork = errors.AlreadyWork;
 var PermissionDenied = errors.PermissionDenied;
+var NoEventFound = errors.NoEventFound;
 
 var addWorker = function (req, res) {
     // JOI validation
@@ -18,9 +19,9 @@ var addWorker = function (req, res) {
     util.validatePromise(req.body, joiSchema).then(function (result) {
         return req.model.EventModel.findById(result.event_id)
     }).then(function (result) {
-        logger.info(result._doc);
-        if (!result || result.owner != req.authInfo) throw new PermissionDenied();
-        if (result._doc.workers.includes(req.body.worker)) throw new AlreadyWork();
+        if (!result) throw new NoEventFound();
+        if (result.owner != req.authInfo) throw new PermissionDenied();
+        if (result._doc.workers.indexOf(req.body.worker) != -1) throw new AlreadyWork();
         result._doc.workers.push(req.body.worker);
         return result.save();
     }).then(function () {

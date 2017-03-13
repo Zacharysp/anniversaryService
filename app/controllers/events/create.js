@@ -13,15 +13,9 @@ var create = function (req, res) {
     util.validatePromise(req.body, joiSchema).then(function (result) {
         result.owner = req.authInfo;
         result.status = 0;
+        result.workers = [req.authInfo];
         var event = new req.model.EventModel(result);
         return event.save()
-    }).then(function (result) {
-        logger.info(result._doc);
-        var eventWorker = new req.model.EventWatcherModel({
-            event_id: result._doc._id,
-            watcher: req.authInfo
-        });
-        return eventWorker.save();
     }).then(function () {
         util.handleSuccessResponse(res)();
     }).catch(function (err) {

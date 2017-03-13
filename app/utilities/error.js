@@ -35,6 +35,10 @@ var definedErrors = [
         className: 'PermissionDenied',
         message: 'You don\'t have permisson',
         code: '0102'
+    },{
+        className: 'NoEventFound',
+        message: 'No event found',
+        code: '0503'
     }
 ];
 

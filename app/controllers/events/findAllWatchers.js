@@ -6,7 +6,7 @@ var util = require('../../utilities/index').util;
 var errors = require('../../utilities/index').errors;
 var Joi = require('joi');
 
-var PermissionDenied = errors.PermissionDenied;
+var NoEventFound = errors.NoEventFound;
 
 var perPage = 100;
 
@@ -19,7 +19,7 @@ var findAllWatchers = function (req, res) {
     util.validatePromise(req.query, joiSchema).then(function (result) {
         return req.model.EventModel.findById(result.event_id)
     }).then(function (result) {
-        if (!result || result.owner != req.authInfo) throw new PermissionDenied();
+        if (!result) throw new NoEventFound();
         var page = req.query.page || 0;
         return req.model.EventWatcherModel
             .find({"event_id": req.query.event_id})
