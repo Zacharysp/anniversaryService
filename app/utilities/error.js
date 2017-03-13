@@ -39,6 +39,10 @@ var definedErrors = [
         className: 'NoEventFound',
         message: 'No event found',
         code: '0503'
+    },{
+        className: 'NoEventIdFound',
+        message: 'No event_id found in request',
+        code: '0504'
     }
 ];
 
