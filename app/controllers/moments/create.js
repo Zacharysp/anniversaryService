@@ -60,7 +60,7 @@ var create = function (req, res) {
                 filename: photoName,
                 mode: 'w',
                 metadata: {
-                    'uploader': req.authInfo,
+                    'uploader': req.user.username,
                     'original_name': part.filename
                 }
             };
@@ -94,10 +94,10 @@ var create = function (req, res) {
         }).then(function (result) {
             if (!result) throw new NoEventFound();
             // permission denied
-            if (result._doc.workers.indexOf(req.authInfo) == -1) throw new PermissionDenied();
+            if (result._doc.workers.indexOf(req.user.username) == -1) throw new PermissionDenied();
             //TODO: delete image file when permission denied
             //prepare moment doc
-            body.owner = req.authInfo;
+            body.owner = req.user.username;
             body.photos = photoNames;
             var moment = new req.model.MomentModel(body);
             return moment.save();

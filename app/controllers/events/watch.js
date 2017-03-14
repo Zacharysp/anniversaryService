@@ -14,13 +14,12 @@ var watch = function (req, res) {
         event_id: Joi.string().length(24).required()
     });
     util.validatePromise(req.body, joiSchema).then(function (result) {
-        return req.model.EventWatcherModel.findOne({'event_id': result.event_id, 'watcher': req.authInfo})
+        return req.model.EventWatcherModel.findOne({'event_id': result.event_id, 'watcher': req.user.username})
     }).then(function (result) {
-        logger.info(result);
         if (result) throw new AlreadyWatch();
         var eventWatcher = new req.model.EventWatcherModel({
             event_id: req.body.event_id,
-            watcher: req.authInfo
+            watcher: req.user.username
         });
         return eventWatcher.save();
     }).then(function () {

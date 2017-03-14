@@ -12,7 +12,8 @@ var EventWatcherSchema = new mongoose.Schema({
         index: true
     },
     watcher: {
-        type: String
+        type: String,
+        index: true
     }
 });
 

@@ -3,3 +3,4 @@
  */
 exports.create = require('./create');
 exports.login = require('./login');
+exports.info = require('./info');

@@ -10,8 +10,6 @@ router.post('/register', userCtrl.create);
 
 router.post('/login', userCtrl.login);
 
-router.get('/', authenticate, function(req, res){
-    res.send(req.authInfo);
-});
+router.get('/', authenticate, userCtrl.info);
 
 module.exports = router;

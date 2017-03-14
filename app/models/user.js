@@ -5,6 +5,7 @@
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var CreateUpdatedAt = require('mongoose-timestamp');
+var ObjectId = mongoose.Schema.ObjectId;
 
 var UserSchema = new mongoose.Schema({
     username: {
@@ -24,7 +25,13 @@ var UserSchema = new mongoose.Schema({
         type: String,
         required: false,
         lowercase: true
-    }
+    },
+    work_event: [
+        {
+            type: ObjectId,
+            ref: 'Event'
+        }
+    ]
 });
 
 UserSchema.plugin(CreateUpdatedAt);

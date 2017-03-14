@@ -20,7 +20,7 @@ var addWorker = function (req, res) {
         return req.model.EventModel.findById(result.event_id)
     }).then(function (result) {
         if (!result) throw new NoEventFound();
-        if (result.owner != req.authInfo) throw new PermissionDenied();
+        if (result.owner != req.user.username) throw new PermissionDenied();
         if (result._doc.workers.indexOf(req.body.worker) != -1) throw new AlreadyWork();
         result._doc.workers.push(req.body.worker);
         return result.save();

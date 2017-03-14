@@ -14,7 +14,7 @@ module.exports.ownerPermission = function(req, res, next) {
     if(!event_id) return util.handleFailResponse(res)(new NoEventIdFound());
     req.model.EventModel.findById(event_id).then(function (result) {
         if (!result) throw new NoEventFound();
-        if (result.owner != req.authInfo) throw new PermissionDenied();
+        if (result.owner != req.user.username) throw new PermissionDenied();
         next()
     }).catch(function (err) {
         return util.handleFailResponse(res)(err);
@@ -26,7 +26,7 @@ module.exports.workerPermission = function(req, res, next) {
     if(!event_id) return util.handleFailResponse(res)(new NoEventIdFound());
     req.model.EventModel.findById(event_id).then(function (result) {
         if (!result) throw new NoEventFound();
-        if (result._doc.workers.indexOf(req.authInfo) == -1) throw new PermissionDenied();
+        if (result._doc.workers.indexOf(req.user.username) == -1) throw new PermissionDenied();
         next()
     }).catch(function (err) {
         return util.handleFailResponse(res)(err);
