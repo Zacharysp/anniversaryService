@@ -16,4 +16,6 @@ router.post('/add', eventCtrl.addWorker);
 
 router.get('/watchers', eventCtrl.findAllWatchers);
 
+router.get('/', eventCtrl.findAll);
+
 module.exports = router;

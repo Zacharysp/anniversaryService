@@ -6,7 +6,7 @@ var config = require('config');
 var mongoose = require('mongoose');
 var dbConfig = config.get('dbConfig');
 
-var connectionString = 'mongodb://' + dbConfig.host + ':' + dbConfig.port + '/' + dbConfig.db + '';
+var connectionString = 'mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.host + ':' + dbConfig.port + '/' + dbConfig.db + '';
 
 var options = {
   db: { native_parser: true },

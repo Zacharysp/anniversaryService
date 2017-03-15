@@ -3,9 +3,11 @@
     "port": 3001
   },
   "dbConfig": {
-    "host": "localhost",
+    "host": "54.183.128.135",
     "port": "27017",
-    "db": "anniversary"
+    "db": "anniversary",
+    "username": "dbAdmin",
+    "password": "anniversary"
   },
   "authConfig": {
     "port": 3000,

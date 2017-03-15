@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+enum ImageAction {
+    resize = 1;
+    delete = 2;
+}
+
+enum ImageType {
+    avatar = 1;
+    normal = 2;
+}
+
+message ImageMessage {
+    required ImageAction action  = 1;
+    repeated string fileNames = 2;
+    required ImageType type = 3;
+}

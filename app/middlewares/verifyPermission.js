@@ -9,7 +9,7 @@ var NoEventIdFound = errors.NoEventIdFound;
 var NoEventFound = errors.NoEventFound;
 var PermissionDenied = errors.PermissionDenied;
 
-module.exports.ownerPermission = function(req, res, next) {
+module.exports.owner = function(req, res, next) {
     var event_id = findEventId(req);
     if(!event_id) return util.handleFailResponse(res)(new NoEventIdFound());
     req.model.EventModel.findById(event_id).then(function (result) {
@@ -21,7 +21,7 @@ module.exports.ownerPermission = function(req, res, next) {
     });
 };
 
-module.exports.workerPermission = function(req, res, next) {
+module.exports.worker = function(req, res, next) {
     var event_id = findEventId(req);
     if(!event_id) return util.handleFailResponse(res)(new NoEventIdFound());
     req.model.EventModel.findById(event_id).then(function (result) {

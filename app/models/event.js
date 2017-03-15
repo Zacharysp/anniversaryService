@@ -20,6 +20,10 @@ var EventSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    from: {
+        type: Date,
+        required: true
+    },
     cover: {
         type: String
     },

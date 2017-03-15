@@ -10,13 +10,13 @@ var ObjectId = mongoose.Schema.ObjectId;
 var UserSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: [true, 'Missing username'],
+        required: true,
         index: true,
         unique: true
     },
     hashed_password: {
         type: String,
-        required: [true, 'Missing password']
+        required: true
     },
     salt: {
         type: String
@@ -31,7 +31,10 @@ var UserSchema = new mongoose.Schema({
             type: ObjectId,
             ref: 'Event'
         }
-    ]
+    ],
+    avatar: {
+        type: String
+    }
 });
 
 UserSchema.plugin(CreateUpdatedAt);
@@ -49,20 +52,6 @@ UserSchema.virtual('password')
         this.hashed_password = this.encryptPassword(password);
     })
     .get(function () { return this._password });
-
-/**
- * verify username is unique
- */
-UserSchema.path('username').validate(function(username, callback){
-    if (this.isNew || this.isModified('username')) {
-        var User = mongoose.model('User');
-        User.find({ username: username }).exec(function (err, users){
-            callback(!err && users.length == 0)
-        })
-    }else {
-        callback(true)
-    }
-}, 'username already existed');
 
 UserSchema.methods = {
 

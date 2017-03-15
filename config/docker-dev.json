@@ -1,0 +1,9 @@
+{
+  "dbConfig": {
+    "host": "localhost",
+    "port": "27017",
+    "db": "anniversary",
+    "username": "dbAdmin",
+    "password": "anniversary"
+  }
+}

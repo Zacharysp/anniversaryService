@@ -6,3 +6,4 @@ exports.create = require('./create');
 exports.watch = require('./watch');
 exports.addWorker = require('./addWorker');
 exports.findAllWatchers = require('./findAllWatchers');
+exports.findAll = require('./findAll');

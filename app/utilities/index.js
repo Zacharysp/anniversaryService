@@ -8,5 +8,6 @@ exports.util = require('./utils');
 exports.errors = require('./error');
 exports.dbClient = require('./dbClient');
 exports.helper = require('./helper');
+exports.kafkaProducer = require('./kafkaProducer');
 
 require('./passport');

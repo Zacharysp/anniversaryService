@@ -1,17 +1,19 @@
 /**
  * Created by Zachary on 3/12/17.
  */
-
-var util = require('../../utilities').util;
-var helper = require('../../utilities').helper;
-var errors = require('../../utilities').errors;
 var Joi = require('joi');
 var multiparty = require('multiparty');
 var moment = require('moment');
-
 var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
 
+var utilities = require('../../utilities');
+var util = utilities.util;
+var helper = utilities.helper;
+var errors = utilities.errors;
+var kafkaProducer = utilities.kafkaProducer;
+
+//custom errors
 var BadRequest = errors.BadRequest;
 var NoEventFound = errors.NoEventFound;
 var PermissionDenied = errors.PermissionDenied;
@@ -95,13 +97,14 @@ var create = function (req, res) {
             if (!result) throw new NoEventFound();
             // permission denied
             if (result._doc.workers.indexOf(req.user.username) == -1) throw new PermissionDenied();
-            //TODO: delete image file when permission denied
             //prepare moment doc
             body.owner = req.user.username;
             body.photos = photoNames;
             var moment = new req.model.MomentModel(body);
             return moment.save();
         }).then(function (result) {
+            //send to kafka, create low quality image files
+            kafkaProducer.resizeImage(photoNames);
             var momentDoc = result.toObject();
             util.handleSuccessResponse(res)({
                 moment_id: momentDoc._id,
@@ -109,6 +112,8 @@ var create = function (req, res) {
                 createdAt: momentDoc.createdAt
             });
         }).catch(function (err) {
+            //send to kafka, delete image file if existed
+            kafkaProducer.deleteService(photoNames);
             return util.handleFailResponse(res)(err);
         });
     });
@@ -135,7 +140,7 @@ function findExtension(filename, header) {
     //look for original file ext
     const supportedType = ['bmp', 'gif', 'jpg', 'jpeg'];
     var nameStrs = filename.split('.');
-    if (supportedType.indexOf(nameStrs[1] != -1)) return nameStrs[1];
+    if (supportedType.indexOf(nameStrs[1] != -1)) return nameStrs[1].toLowerCase();
     //look for content-type
     const mime = {
         "image/bmp": "bmp",

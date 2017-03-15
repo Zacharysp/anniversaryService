@@ -10,6 +10,12 @@ router.post('/register', userCtrl.create);
 
 router.post('/login', userCtrl.login);
 
-router.get('/', authenticate, userCtrl.info);
+router.use(authenticate);
+
+router.post('/avatar/upload', userCtrl.uploadAvatar);
+
+router.get('/avatar', userCtrl.findAvatar);
+
+router.get('/', userCtrl.info);
 
 module.exports = router;

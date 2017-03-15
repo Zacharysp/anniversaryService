@@ -3,3 +3,4 @@
  */
 
 exports.auth = require('./authenticate');
+exports.permission = require('./verifyPermission');

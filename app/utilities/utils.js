@@ -20,8 +20,8 @@ var joiValidate = Promise.promisify(Joi.validate);
  * @param res
  * @returns {Function}
  */
-exports.handleFailResponse = function (res){
-    return function(err) {
+exports.handleFailResponse = function (res) {
+    return function (err) {
         if (err.name == null) {
             err = new ServerError();
         }
@@ -29,6 +29,7 @@ exports.handleFailResponse = function (res){
         switch (err.name) {
             //handle validation error response
             case 'ValidationError':
+            case 'MongoError':
                 res.status(400).send(handleResponse(301, displayValidationError(err)));
                 break;
             //handle database error response
@@ -45,6 +46,7 @@ exports.handleFailResponse = function (res){
                 break;
             //handle bad request error response
             default:
+                logger.info(err.name);
                 res.status(400).send(handleResponse(err.code, err.message));
                 break;
         }
@@ -84,22 +86,26 @@ function handleResponse(code, msg, data) {
  * @param err
  * @returns {string}
  */
-function displayValidationError (err){
+function displayValidationError(err) {
     var msgs = [];
-    if (err.errors) {
+    if (err.isJoi) {
+        //joi error
+        logger.info('joi');
+        err.details.forEach(function (data) {
+            msgs.push(data.message);
+        });
+    } else if (err.errors) {
         //mongoose errors
         logger.info('mongoose');
         for (var key in err.errors) {
-            if (err.errors.hasOwnProperty(key)){
+            if (err.errors.hasOwnProperty(key)) {
                 msgs.push(err.errors[key].message);
             }
         }
-    }else {
-        //joi error
-        logger.info('joi');
-        err.details.forEach(function(data){
-            msgs.push(data.message);
-        });
+    } else if (11000 === err.code || 11001 === err.code) {
+        msgs.push('Duplicate found');
+    } else {
+        msgs.push(err.message);
     }
     return msgs.join(', ');
 }

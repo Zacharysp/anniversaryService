@@ -8,7 +8,8 @@ var Joi = require('joi');
 var create = function (req, res) {
     // JOI validation
     var joiSchema = Joi.object().keys({
-        title: Joi.string().max(50).required()
+        title: Joi.string().max(50).required(),
+        from: Joi.date().min('1-1-1900').max(Date()).default(Date())
     });
     util.validatePromise(req.body, joiSchema).then(function (result) {
         result.owner = req.user.username;
