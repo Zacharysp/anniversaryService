@@ -1,16 +1,16 @@
 /**
  * Created by dzhang on 2/6/17.
  */
-"use strict";
-var config = require('config');
-var mongoose = require('mongoose');
-var dbConfig = config.get('dbConfig');
+const config = require('config');
+const mongoose = require('mongoose');
+const dbConfig = config.get('dbConfig');
 
-var connectionString = 'mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.host + ':' + dbConfig.port + '/' + dbConfig.db + '';
+const connectionString = 'mongodb://' +dbConfig.username +
+':' + dbConfig.password + '@' + dbConfig.host + ':' + dbConfig.port + '/' + dbConfig.db + '';
 
-var options = {
-  db: { native_parser: true },
-  server: { poolSize: 5 }
+const options = {
+  db: {native_parser: true},
+  server: {poolSize: 5}
 };
 
 logger.info('Connect mongodb to: ' + connectionString);
@@ -25,9 +25,9 @@ mongoose.connect(connectionString, options, function(err) {
 });
 mongoose.Promise = require('bluebird');
 
-var dbClient = mongoose.connection;
+let dbClient = mongoose.connection;
 
-dbClient.on('error', function(err){
+dbClient.on('error', (err) => {
     return logger.error('Mongoose connect fail:', err);
 });
 
@@ -36,5 +36,3 @@ dbClient.once('open', function() {
 });
 
 module.exports.dbClient = dbClient;
-
-

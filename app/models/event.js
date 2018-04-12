@@ -1,11 +1,10 @@
 /**
  * Created by Zachary on 3/6/17.
  */
-"use strict";
-var mongoose = require('mongoose');
-var CreateUpdatedAt = require('mongoose-timestamp');
+const mongoose = require('mongoose');
+const CreateUpdatedAt = require('mongoose-timestamp');
 
-var EventSchema = new mongoose.Schema({
+const EventSchema = new mongoose.Schema({
     owner: {
         type: String,
         required: true
@@ -39,7 +38,6 @@ var EventSchema = new mongoose.Schema({
 
 EventSchema.plugin(CreateUpdatedAt);
 
-
-var EventModel = mongoose.model('Event', EventSchema);
+let EventModel = mongoose.model('Event', EventSchema);
 
 module.exports = EventModel;

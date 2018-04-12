@@ -2,21 +2,21 @@
  * Created by Zachary on 3/14/17.
  */
 
-var util = require('../../utilities').util;
+const util = require('../../utilities').util;
 
-var info = function (req, res) {
-    req.model.EventWatcherModel.find({watcher: req.user.username}, 'event_id', function(err, results){
+let info = (req, res) => {
+    req.model.EventWatcherModel.find({watcher: req.user.username}, 'event_id', (err, results) => {
         if (err) util.handleFailResponse(res)(err);
         logger.info(results);
-        var watched_events = [];
-        results.forEach(function (result) {
-            watched_events.push(result.toObject().event_id);
+        let watchedEvents = [];
+        results.forEach((result) => {
+            watchedEvents.push(result.toObject().event_id);
         });
         util.handleSuccessResponse(res)({
             createdAt: req.user.createdAt,
             username: req.user.username,
             work_event: req.user.work_event,
-            watched_event: watched_events,
+            watched_event: watchedEvents,
             email: req.user.email
         });
     });

@@ -1,10 +1,10 @@
 /**
  * Created by Zachary on 3/6/17.
  */
-"use strict";
-var router = require('express').Router();
-var eventCtrl = require('../controllers/events');
-var authenticate = require('../middlewares').auth;
+const express = require('express');
+const router = new express.Router();
+const eventCtrl = require('../controllers/events');
+const authenticate = require('../middlewares').auth;
 
 router.use(authenticate);
 

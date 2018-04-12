@@ -1,11 +1,9 @@
 /**
  * Created by dzhang on 2/13/17.
  */
+const util = require('util');
 
-"use strict";
-var util = require("util");
-
-var definedErrors = [
+const definedErrors = [
     {
         className: 'UnauthorizedError',
         message: 'unauthorized',
@@ -50,10 +48,9 @@ var definedErrors = [
     }
 ];
 
-for (var i = 0; i < definedErrors.length; i++) {
-    var className = definedErrors[i].className;
-
-    var fn = initError(definedErrors[i]);
+for (let i = 0; i < definedErrors.length; i++) {
+    let className = definedErrors[i].className;
+    let fn = initError(definedErrors[i]);
     util.inherits(fn, Error);
     module.exports[className] = fn;
 }
@@ -64,5 +61,5 @@ function initError(error) {
         this.name = error.className;
         this.code = error.code;
         Error.captureStackTrace(this, fn);
-    }
+    };
 }

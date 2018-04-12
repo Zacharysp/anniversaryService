@@ -2,40 +2,40 @@
  * Created by Zachary on 3/11/17.
  */
 
-var util = require('../../utilities/index').util;
-var errors = require('../../utilities/index').errors;
-var Joi = require('joi');
+const util = require('../../utilities/index').util;
+const errors = require('../../utilities/index').errors;
+const Joi = require('joi');
 
-var AlreadyWork = errors.AlreadyWork;
-var PermissionDenied = errors.PermissionDenied;
-var NoEventFound = errors.NoEventFound;
+const AlreadyWork = errors.AlreadyWork;
+const PermissionDenied = errors.PermissionDenied;
+const NoEventFound = errors.NoEventFound;
 
-var addWorker = function (req, res) {
+let addWorker = (req, res) => {
     // JOI validation
-    var joiSchema = Joi.object().keys({
+    const joiSchema = Joi.object().keys({
         event_id: Joi.string().length(24).required(),
         workers: Joi.array().items(Joi.string()).required()
     });
-    util.validatePromise(req.body, joiSchema).then(function (result) {
-        return req.model.EventModel.findById(result.event_id)
-    }).then(function (result) {
+    util.validatePromise(req.body, joiSchema).then((result) => {
+        return req.model.EventModel.findById(result.event_id);
+    }).then((result) => {
         if (!result) throw new NoEventFound();
         if (result.owner != req.user.username) throw new PermissionDenied();
         if (result._doc.workers.indexOf(req.body.worker) != -1) throw new AlreadyWork();
         result._doc.workers.push(req.body.workers);
         return result.save();
-    }).then(function () {
+    }).then(() => {
         return updateWorker(req);
-    }).then(function () {
+    }).then(() => {
         util.handleSuccessResponse(res)();
-    }).catch(function (err) {
+    }).catch((err) => {
         return util.handleFailResponse(res)(err);
     });
 };
 
 function updateWorker(req) {
-    var bulkOps = [];
-    req.body.workers.forEach(function (worker) {
+    let bulkOps = [];
+    req.body.workers.forEach((worker) => {
         bulkOps.push({
             updateOne: {
                 filter: {username: worker},
@@ -43,7 +43,7 @@ function updateWorker(req) {
             }
         });
     });
-    return req.model.UserModel.bulkWrite(bulkOps, {"ordered": false, w: 1});
+    return req.model.UserModel.bulkWrite(bulkOps, {'ordered': false, 'w': 1});
 }
 
 module.exports = addWorker;

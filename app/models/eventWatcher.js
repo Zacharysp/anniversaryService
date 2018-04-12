@@ -1,12 +1,11 @@
 /**
  * Created by Zachary on 3/6/17.
  */
-"use strict";
-var mongoose = require('mongoose');
-var CreateUpdatedAt = require('mongoose-timestamp');
-var ObjectId = mongoose.Schema.ObjectId;
+const mongoose = require('mongoose');
+const CreateUpdatedAt = require('mongoose-timestamp');
+const ObjectId = mongoose.Schema.ObjectId;
 
-var EventWatcherSchema = new mongoose.Schema({
+const EventWatcherSchema = new mongoose.Schema({
     event_id: {
         type: ObjectId,
         index: true
@@ -19,6 +18,6 @@ var EventWatcherSchema = new mongoose.Schema({
 
 EventWatcherSchema.plugin(CreateUpdatedAt);
 
-var EventWatcherModel = mongoose.model('EventWatcher', EventWatcherSchema);
+let EventWatcherModel = mongoose.model('EventWatcher', EventWatcherSchema);
 
 module.exports = EventWatcherModel;

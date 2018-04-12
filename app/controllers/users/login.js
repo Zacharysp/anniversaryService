@@ -2,52 +2,52 @@
  * Created by Zachary on 3/4/17.
  */
 
-var Joi = require('joi');
-var util = require('../../utilities').util;
-var errors = require('../../utilities').errors;
-var passport = require('passport');
+const Joi = require('joi');
+const util = require('../../utilities').util;
+const errors = require('../../utilities').errors;
+const passport = require('passport');
 
-var jwt = require('jsonwebtoken');
-var config = require('config');
-var secret = config.get('secret');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const secret = config.get('secret');
 
-var LoginFail = errors.LoginFail;
+const LoginFail = errors.LoginFail;
 
-var login = function (req, res, next) {
-    var joiSchema = Joi.object().keys({
+let login = (req, res, next) => {
+    const joiSchema = Joi.object().keys({
         username: Joi.string().required(),
         password: Joi.string().required()
     });
-    util.validatePromise(req.body, joiSchema).then(function () {
-        //authentication with username and password
-        passport.authenticate(['local'], {session: false}, function (err, user) {
+    util.validatePromise(req.body, joiSchema).then(() => {
+        // authentication with username and password
+        passport.authenticate(['local'], {session: false}, (err, user) => {
             if (err) {
                 return util.handleFailResponse(res)(err);
             }
             if (!user) {
                 return util.handleFailResponse(res)(new LoginFail());
             }
-            //find watched event
-            req.model.EventWatcherModel.find({watcher: user.username}, 'event_id', function(err, results){
+            // find watched event
+            req.model.EventWatcherModel.find({watcher: user.username}, 'event_id', (err, results) => {
                 if (err) util.handleFailResponse(res)(err);
                 logger.info(results);
-                var watched_events = [];
-                results.forEach(function (result) {
-                    watched_events.push(result.toObject().event_id);
+                let watchedEvents = [];
+                results.forEach((result) => {
+                    watchedEvents.push(result.toObject().event_id);
                 });
                 util.handleSuccessResponse(res)({
                     createdAt: user.createdAt,
                     username: user.username,
                     work_event: user.work_event,
-                    watched_event: watched_events,
+                    watched_event: watchedEvents,
                     email: user.email,
                     token: {token: jwt.sign({id: user.username}, secret)}
                 });
             });
         })(req, res, next);
-    }).catch(function (err) {
+    }).catch((err) => {
         util.handleFailResponse(res)(err);
-    })
+    });
 };
 
 module.exports = login;

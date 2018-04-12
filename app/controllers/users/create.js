@@ -2,22 +2,22 @@
  * Created by Zachary on 3/1/17.
  */
 
-var util = require('../../utilities').util;
-var Joi = require('joi');
+const util = require('../../utilities').util;
+const Joi = require('joi');
 
-var create = function (req, res) {
+let create = (req, res) => {
     // JOI validation
-    var joiSchema = Joi.object().keys({
+    const joiSchema = Joi.object().keys({
         username: Joi.string().alphanum().min(3).max(20).required(),
         password: Joi.string().regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/).min(8).max(20).required(),
         email: Joi.string().email().optional()
     });
-    util.validatePromise(req.body, joiSchema).then(function(result){
-        var user = new req.model.UserModel(result);
-        return user.save()
-    }).then(function(){
+    util.validatePromise(req.body, joiSchema).then((result) => {
+        let user = new req.model.UserModel(result);
+        return user.save();
+    }).then(() => {
         util.handleSuccessResponse(res)();
-    }).catch(function(err){
+    }).catch((err) => {
         return util.handleFailResponse(res)(err);
     });
 };

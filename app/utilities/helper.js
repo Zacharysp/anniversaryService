@@ -2,10 +2,10 @@
  * Created by Zachary on 3/13/17.
  */
 
-exports.moodList = function () {
-    return ['']
+exports.moodList = () => {
+    return [''];
 };
 
-exports.weatherList = function () {
-    return ['']
+exports.weatherList = () => {
+    return [''];
 };

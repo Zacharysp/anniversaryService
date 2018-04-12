@@ -1,12 +1,12 @@
 /**
  * Created by dzhang on 2/6/17.
  */
-"use strict";
+'use strict';
 
-var express = require('express');
-var router = express.Router();
-var util = require('./app/utilities');
-var app = express();
+const express = require('express');
+const router = new express.Router();
+const util = require('./app/utilities');
+const app = express();
 
 
 router.use(require('./app/routes'));
@@ -20,7 +20,3 @@ router.use(require('./app/routes'));
 util.build.start(app, router);
 
 module.exports = app;
-
-
-
-

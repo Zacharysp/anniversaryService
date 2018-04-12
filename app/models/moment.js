@@ -1,11 +1,10 @@
 /**
  * Created by Zachary on 3/12/17.
  */
-"use strict";
-var mongoose = require('mongoose');
-var CreateUpdatedAt = require('mongoose-timestamp');
+const mongoose = require('mongoose');
+const CreateUpdatedAt = require('mongoose-timestamp');
 
-var MomentSchema = new mongoose.Schema({
+const MomentSchema = new mongoose.Schema({
     owner: {
         type: String,
         required: true
@@ -43,7 +42,7 @@ var MomentSchema = new mongoose.Schema({
     longitude: {
         type: Number
     },
-    ip:{
+    ip: {
         type: String
     },
     weather: {
@@ -60,6 +59,6 @@ var MomentSchema = new mongoose.Schema({
 
 MomentSchema.plugin(CreateUpdatedAt);
 
-var MomentModel = mongoose.model('Moment', MomentSchema);
+let MomentModel = mongoose.model('Moment', MomentSchema);
 
 module.exports = MomentModel;

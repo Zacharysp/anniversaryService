@@ -1,37 +1,35 @@
 /**
  * Created by dzhang on 2/6/17.
  */
+const bodyParser = require('body-parser');
+const filters = require('./filters');
+const cluster = require('cluster');
+const helmet = require('helmet');
+const cors = require('cors');
 
-"use strict";
-var bodyParser = require('body-parser');
-var filters = require('./filters');
-var cluster = require('cluster');
-var helmet = require('helmet');
+const http = require('http');
+const https = require('https');
 
-var http = require('http');
-var https = require('https');
+const config = require('config');
+const serverConfig = config.get('serverConfig');
+const cpuCount = require('os').cpus().length;
 
-var config = require('config');
-var serverConfig = config.get('serverConfig');
-var cpuCount = require('os').cpus().length;
+const fs = require('fs');
+const constants = require('constants');
 
-var fs = require('fs');
-var constants = require('constants');
+// api request colorful logging on console
+const morgan = require('morgan');
+const chalk = require('chalk');
 
-var morgan = require('morgan');
-var chalk = require('chalk');
-
-morgan.token('colormethodurlstatus', function (req, res) {
+morgan.token('colormethodurlstatus', (req, res) => {
     function headersSent(res) {
-        return typeof res.headersSent !== 'boolean'
-            ? Boolean(res._header)
-            : res.headersSent
+        return typeof res.headersSent !== 'boolean' ? Boolean(res._header) : res.headersSent;
     }
 
-    var method = chalk.blue(req.method);
-    var url = req.originalUrl || req.url;
-    var status = headersSent(res) ? String(res.statusCode) : undefined;
-    var statusStr = status >= 500 ? chalk.red(status)
+    let method = chalk.blue(req.method);
+    let url = req.originalUrl || req.url;
+    let status = headersSent(res) ? String(res.statusCode) : undefined;
+    let statusStr = status >= 500 ? chalk.red(status)
         : status >= 400 ? chalk.yellow(status)
             : status >= 300 ? chalk.cyan(status)
                 : status >= 200 ? chalk.green(status)
@@ -39,22 +37,46 @@ morgan.token('colormethodurlstatus', function (req, res) {
     return method + ' ' + url + ' ' + statusStr;
 });
 
-function init(app) {
+const init = (app) => {
+    // Helmet secure apps by setting letious HTTP headers. ref: https://helmetjs.github.io
     app.use(helmet());
+    // enable cors for all requests
+    app.use(cors());
+    // api request colorful logging on console
     app.use(morgan(':date[iso] - :colormethodurlstatus :response-time ms - :res[content-length]'));
+    // 5 mb content limit
     app.use(bodyParser.json({limit: '5mb'}));
-    app.use(bodyParser.urlencoded({extended: true}));
+    // should remove etag
     app.disable('etag');
 
-    app.use(filters.cors);
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
         req.model = require('../models');
         next();
-    })
-}
+    });
+};
 
-exports.start = function (app, router) {
-    startApp(app, router);
+exports.start = (app, router) => {
+    if (process.env.NODE_ENV === 'test') {
+        startApp(app, router);
+    } else if (cluster.isMaster) {
+        // Create a worker for each CPU
+        for (let i = 0; i < cpuCount; i += 1) {
+            cluster.fork();
+        }
+
+        // Listen for dying workers
+        cluster.on('exit', function() {
+            cluster.fork();
+        });
+    } else {
+        startApp(app, router);
+    }
+
+    process.on('uncaughtException', function(err) {
+        // TODO: send error log email
+        logger.error(err);
+        process.exit(1);
+    });
 };
 
 function startApp(app, router) {
@@ -66,29 +88,28 @@ function startApp(app, router) {
     /**
      * Create HTTP server.
      */
-    var port;
-    var server;
+    let port;
+    let server;
 
     /**
      * Get port from environment and store in Express.
      */
     port = normalizePort(process.env.PORT || serverConfig.port);
-    // Create Https server
-    // if(process.env.NODE_ENV == 'production'){
-    //     logger.info('Starting https server...');
-    //     server = https.createServer({
-    //         secureProtocol: 'SSLv23_method',
-    //         secureOptions: constants.SSL_OP_NO_SSLv3,
-    //         key: fs.readFileSync(serverConfig.sslKey),
-    //         cert: fs.readFileSync(serverConfig.sslCert)
-    //     }, app);
-    // }else{
-
-    logger.info('Starting http server...');
-    server = http.createServer(app);
+    if (process.env.NODE_ENV === 'production') {
+        logger.info('Starting https server...');
+        server = https.createServer({
+            secureProtocol: 'SSLv23_method',
+            secureOptions: constants.SSL_OP_NO_SSLv3,
+            key: fs.readFileSync(serverConfig.sslKey),
+            cert: fs.readFileSync(serverConfig.sslCert)
+        }, app);
+    } else {
+        logger.info('Starting http server...');
+        server = http.createServer(app);
+    }
     app.set('port', port);
 
-    /**:
+    /**
      * Listen on provided port, on all network interfaces.
      */
     server.listen(port);
@@ -98,21 +119,18 @@ function startApp(app, router) {
     /**
      * Normalize a port into a number, string, or false.
      */
-    function normalizePort(val) {
-        var port = parseInt(val, 10);
-
+    let normalizePort = (val) => {
+        let port = parseInt(val, 10);
         if (isNaN(port)) {
             // named pipe
             return val;
         }
-
         if (port >= 0) {
             // port number
             return port;
         }
-
         return false;
-    }
+    };
 
     /**
      * Event listener for HTTP server "error" event.
@@ -122,7 +140,7 @@ function startApp(app, router) {
             throw error;
         }
 
-        var bind = typeof port === 'string'
+        let bind = typeof port === 'string'
             ? 'Pipe ' + port
             : 'Port ' + port;
 
@@ -145,14 +163,10 @@ function startApp(app, router) {
      * Event listener for HTTP server "listening" event.
      */
     function onListening() {
-        var addr = server.address();
-        var bind = typeof addr === 'string'
+        let addr = server.address();
+        let bind = typeof addr === 'string'
             ? 'pipe ' + addr
             : 'port ' + addr.port;
-        logger.info("Listening on " + bind);
+        logger.info('Listening on ' + bind);
     }
 }
-
-
-
-

@@ -2,31 +2,31 @@
  * Created by dzhang on 3/15/17.
  */
 
-var util = require('../../utilities').util;
-var errors = require('../../utilities').errors;
-var mongoose = require('mongoose');
-var Grid = require('gridfs-stream');
+const util = require('../../utilities').util;
+const errors = require('../../utilities').errors;
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
 
-var NoImageIdFound = errors.NoImageIdFound;
+const NoImageIdFound = errors.NoImageIdFound;
 
-var findAvatar = function (req, res) {
+let findAvatar = (req, res) => {
     logger.info(req.user.avatar);
-    var filename = req.user.avatar;
+    let filename = req.user.avatar;
     if (req.query.quality == 'low') {
-        var strs = filename.split('.');
+        let strs = filename.split('.');
         filename = [strs[0] + '_low', strs[1]].join('.');
     }
     // streaming from gridfs
-    var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-    var readStream = gfs.createReadStream({
+    let gfs = new Grid(mongoose.connection.db, mongoose.mongo);
+    let readStream = gfs.createReadStream({
         filename: filename
     });
-    //error handling
-    readStream.on('error', function (err) {
+    // error handling
+    readStream.on('error', (err) => {
         logger.error('error on fetch from gridfs', err);
         util.handleFailResponse(res)(new NoImageIdFound());
     });
-    //pass to response
+    // pass to response
     readStream.pipe(res);
 };
 

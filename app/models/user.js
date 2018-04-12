@@ -1,13 +1,12 @@
 /**
  * Created by dzhang on 2/28/17.
  */
-"use strict";
-var mongoose = require('mongoose');
-var crypto = require('crypto');
-var CreateUpdatedAt = require('mongoose-timestamp');
-var ObjectId = mongoose.Schema.ObjectId;
+const mongoose = require('mongoose');
+const crypto = require('crypto');
+const CreateUpdatedAt = require('mongoose-timestamp');
+const ObjectId = mongoose.Schema.ObjectId;
 
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -40,18 +39,20 @@ var UserSchema = new mongoose.Schema({
 UserSchema.plugin(CreateUpdatedAt);
 
 
-UserSchema.index({ username: 1 });
+UserSchema.index({username: 1});
 
 /**
  * Virtuals
  */
 UserSchema.virtual('password')
-    .set(function (password) {
+    .set(function(password) {
         this._password = password;
         this.salt = this.makeSalt();
         this.hashed_password = this.encryptPassword(password);
     })
-    .get(function () { return this._password });
+    .get(function() {
+        return this._password;
+    });
 
 UserSchema.methods = {
 
@@ -63,8 +64,8 @@ UserSchema.methods = {
      * @api public
      */
 
-    authenticate: function (plainText) {
-        return this.encryptPassword(plainText) === this.hashed_password
+    authenticate: function(plainText) {
+        return this.encryptPassword(plainText) === this.hashed_password;
     },
 
     /**
@@ -74,8 +75,8 @@ UserSchema.methods = {
      * @api public
      */
 
-    makeSalt: function () {
-        return Math.round((new Date().valueOf() * Math.random())) + ''
+    makeSalt: function() {
+        return Math.round((new Date().valueOf() * Math.random())) + '';
     },
 
     /**
@@ -86,16 +87,16 @@ UserSchema.methods = {
      * @api public
      */
 
-    encryptPassword: function (password) {
+    encryptPassword: function(password) {
         if (!password) return '';
         try {
             return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
         } catch (err) {
-            return ''
+            return '';
         }
     }
 };
 
-var UserModel = mongoose.model('User', UserSchema);
+let UserModel = mongoose.model('User', UserSchema);
 
 module.exports = UserModel;
