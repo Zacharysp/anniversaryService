@@ -33,7 +33,10 @@ const EventSchema = new mongoose.Schema({
     workers: [{
         type: String,
         ref: 'User'
-    }]
+    }],
+    comment: {
+        type: String
+    }
 });
 
 EventSchema.plugin(CreateUpdatedAt);
